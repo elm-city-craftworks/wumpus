@@ -2,6 +2,52 @@
 #    1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10
 # 
 
+require "set"
+
+class Room
+  def initialize(number)
+    @number    = number
+    @neighbors = Set.new
+  end
+
+  attr_reader :number, :neighbors
+
+  def connect(other_room)
+    neighbors << other_room
+
+    other_room.neighbors << self
+  end
+
+  def neighboring_room_numbers 
+    neighbors.map { |e| e.number }
+  end
+
+  def find_neighbor(number)
+    neighbors.find { |e| e.number == number }
+  end
+end
+
+rooms = (1..10).map{ |i| Room.new(i) }
+rooms.each_cons(2) { |a,b| a.connect(b) }
+
+room  = rooms.first
+
+loop do
+  puts room.number
+
+  break if room.number == 10
+  room = room.find_neighbor(room.neighboring_room_numbers.max)
+end
+
+
+
+
+
+
+
+
+
+=begin
 wumpus_room  = rand(2..10)
 current_room = 1
 
@@ -52,3 +98,4 @@ loop do
     end
   end
 end
+=end
