@@ -27,75 +27,95 @@ class Room
   end
 end
 
-rooms = (1..10).map{ |i| Room.new(i) }
-rooms.each_cons(2) { |a,b| a.connect(b) }
+class Narrator
+  def initialize(current_room, wumpus_room)
+    @current_room = current_room
+    @wumpus_room  = wumpus_room
+  end
 
-room  = rooms.first
+  def describes_room
+    puts "-----------------------------------------"
+    puts "You are in room #{@current_room.number}."
 
-loop do
-  puts room.number
-
-  break if room.number == 10
-  room = room.find_neighbor(room.neighboring_room_numbers.max)
-end
-
-
-
-
-
-
-
-
-
-=begin
-wumpus_room  = rand(2..10)
-current_room = 1
-
-loop do
-  puts
-
-  if current_room == 0
-    puts "You escaped the cave unharmed,"
-    puts "but the wumpus still lurks in the shadows. GAME OVER!"
-    exit
-  elsif current_room == wumpus_room
-    puts "The wumpus gobbled you up. GAME OVER!"
-    exit
-  else
-    if (current_room - wumpus_room).abs == 1
+    if exits.include?(@wumpus_room.number)
       puts "You smell something terrible."
     end
 
-    puts "You are in room #{current_room}."
-    puts "Exits go to #{current_room - 1} and #{current_room + 1}."
+    puts "Exits go to: #{exits.join(', ')}"
+  end
 
-    puts "What do you want to do? (m)ove or (s)hoot?"
+  def asks_player_to_act
+    accepting_player_input do |action, dest|
+      case action
+      when "m"
+        @current_room = @current_room.find_neighbor(dest)
+
+        if @current_room == @wumpus_room
+          game_over("The wumpus gobbled you up. GAME OVER!")
+        end
+      when "s"
+        if @current_room.find_neighbor(dest) == @wumpus_room
+         game_over("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!")
+        else
+          puts "Your arrow didn't hit anything. Try a different room?"
+        end
+      end
+    end
+  end
+
+  def finished?
+    !!@ending_message
+  end
+
+  def describe_ending
+    puts "-----------------------------------------"
+    puts @ending_message
+  end
+
+  private
+
+  def game_over(message)
+    @ending_message = message
+  end
+
+  def exits
+    @current_room.neighboring_room_numbers
+  end
+
+  def accepting_player_input
+    puts "-----------------------------------------"
+    print "What do you want to do? (m)ove or (s)hoot? "
     action = gets.chomp
 
     unless ["m","s"].include?(action)
       puts "INVALID ACTION! TRY AGAIN!"
-      next
+      return
     end
 
     print "Where? "
-    room = gets.to_i
+    dest = gets.to_i
 
-    unless (current_room - room).abs == 1
+    unless exits.include?(dest)
       puts "THERE IS NO PATH TO THAT ROOM! TRY AGAIN!"
-      next
+      return
     end
 
-    case action
-    when "m"
-      current_room = room
-    when "s"
-      if room == wumpus_room
-        puts "YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!"
-        exit
-      else
-        puts "Your arrow didn't hit anything. Try a different room?"
-      end
-    end
+    yield(action, dest)
   end
 end
-=end
+
+rooms = (1..10).map{ |i| Room.new(i) }
+rooms.each_cons(2) { |a,b| a.connect(b) }
+
+current_room = rooms.first
+wumpus_room  = rooms[5..-1].sample
+
+narrator = Narrator.new(current_room, wumpus_room)
+
+until narrator.finished?
+  narrator.describes_room
+  narrator.asks_player_to_act
+end
+
+narrator.describe_ending
+
