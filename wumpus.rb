@@ -33,7 +33,7 @@ class Narrator
     @wumpus_room  = wumpus_room
   end
 
-  def describes_room
+  def describe_room
     puts "-----------------------------------------"
     puts "You are in room #{@current_room.number}."
 
@@ -44,7 +44,7 @@ class Narrator
     puts "Exits go to: #{exits.join(', ')}"
   end
 
-  def asks_player_to_act
+  def ask_player_to_act
     accepting_player_input do |action, dest|
       case action
       when "m"
@@ -123,8 +123,8 @@ wumpus_room  = rooms[rand(1..20)]
 narrator = Narrator.new(current_room, wumpus_room)
 
 until narrator.finished?
-  narrator.describes_room
-  narrator.asks_player_to_act
+  narrator.describe_room
+  narrator.ask_player_to_act
 end
 
 narrator.describe_ending
