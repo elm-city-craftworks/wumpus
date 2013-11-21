@@ -29,15 +29,15 @@ end
 
 class Narrator
   def initialize(cave)
-    @current_room = cave.current_room
-    @wumpus_room  = cave.wumpus_room
+    @cave         = cave
+    @current_room = cave.starting_room
   end
 
   def describe_room
     puts "-----------------------------------------"
     puts "You are in room #{@current_room.number}."
 
-    if exits.include?(@wumpus_room.number)
+    if @current_room.neighbors.any? { |e| @cave.wumpus_room?(e) }
       puts "You smell something terrible."
     end
 
@@ -50,11 +50,11 @@ class Narrator
       when "m"
         @current_room = @current_room.find_neighbor(dest)
 
-        if @current_room == @wumpus_room
+        if @cave.wumpus_room?(@current_room)
           game_over("The wumpus gobbled you up. GAME OVER!")
         end
       when "s"
-        if @current_room.find_neighbor(dest) == @wumpus_room
+        if @cave.wumpus_room?(@current_room.find_neighbor(dest))
           game_over("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!")
         else
           game_over("YOU SHOT INTO AN EMPTY ROOM. THIS WOKE THE WUMPUS "+
@@ -119,11 +119,15 @@ class Cave
 
     connections.each { |a,b| @rooms[a].connect(@rooms[b]) }
 
-    @current_room = @rooms[rand(1..20)]
-    @wumpus_room  = @rooms[rand(1..20)]
+    @starting_room = @rooms[rand(1..20)]
+    @wumpus_room   = @rooms[rand(1..20)]
   end
 
-  attr_reader :rooms, :current_room, :wumpus_room
+  def wumpus_room?(room)
+    room.number == @wumpus_room.number
+  end
+
+  attr_reader :rooms, :starting_room, :wumpus_room
 end
 
 
