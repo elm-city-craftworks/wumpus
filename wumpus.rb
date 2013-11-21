@@ -28,9 +28,9 @@ class Room
 end
 
 class Narrator
-  def initialize(current_room, wumpus_room)
-    @current_room = current_room
-    @wumpus_room  = wumpus_room
+  def initialize(cave)
+    @current_room = cave.current_room
+    @wumpus_room  = cave.wumpus_room
   end
 
   def describe_room
@@ -105,22 +105,29 @@ class Narrator
   end
 end
 
-rooms = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
+class Cave
+  def initialize
+    @rooms = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
 
-connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
-               [1,5],[2,3],[9,10],[20,11],[7,8],
-               [5,4],[4,3],[3,12],[12,9],[9,19],
-               [19,20],[20,17],[17,7],[7,6],[6,5],
-               [4,14],[12,13],[18,19],[16,17],
-               [15,6],[14,13],[13,18],[18,16],
-               [16,15],[15,14]]
+    connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
+                   [1,5],[2,3],[9,10],[20,11],[7,8],
+                   [5,4],[4,3],[3,12],[12,9],[9,19],
+                   [19,20],[20,17],[17,7],[7,6],[6,5],
+                   [4,14],[12,13],[18,19],[16,17],
+                   [15,6],[14,13],[13,18],[18,16],
+                   [16,15],[15,14]]
 
-connections.each { |a,b| rooms[a].connect(rooms[b]) }
+    connections.each { |a,b| @rooms[a].connect(@rooms[b]) }
 
-current_room = rooms[rand(1..20)]
-wumpus_room  = rooms[rand(1..20)]
+    @current_room = @rooms[rand(1..20)]
+    @wumpus_room  = @rooms[rand(1..20)]
+  end
 
-narrator = Narrator.new(current_room, wumpus_room)
+  attr_reader :rooms, :current_room, :wumpus_room
+end
+
+
+narrator = Narrator.new(Cave.new)
 
 until narrator.finished?
   narrator.describe_room
