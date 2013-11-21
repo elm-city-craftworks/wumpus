@@ -167,10 +167,7 @@ class Cave
   attr_reader :rooms, :starting_room, :wumpus_room
 end
 
-
-cave = Marshal.load(File.binread("cave.dump"))
-
-narrator = Narrator.new(cave)
+narrator = Narrator.new(Cave.new)
 
 until narrator.finished?
   narrator.describe_room
