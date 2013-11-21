@@ -45,6 +45,10 @@ class Narrator
       puts "You feel a cold wind flowing through the cavern"
     end
 
+    if @current_room.neighbors.any? { |e| @cave.bat?(e) }
+      puts "You hear the rustling of bat wings nearby"
+    end
+
     puts "Exits go to: #{exits.join(', ')}"
   end
 
@@ -59,6 +63,15 @@ class Narrator
           game_over("The wumpus gobbled you up. GAME OVER!")
         when @cave.pit?(@current_room)
           game_over("You stumbled into a bottomless pit. Have a nice fall!")
+        when @cave.bat?(@current_room)
+          puts "Giant bats whisk you away to a new cavern!"
+
+          new_room = @cave.random_room
+
+          @cave.bats.delete(@current_room) 
+          @cave.bats.push(new_room)
+
+          @current_room = new_room
         end
       when "s"
         if @cave.wumpus_room?(@current_room.find_neighbor(dest))
@@ -130,7 +143,10 @@ class Cave
     @wumpus_room   = random_room
 
     @pits = 3.times.map { random_room }
+    @bats = 3.times.map { random_room }
   end
+
+  attr_reader :bats
 
   def random_room
     @rooms[rand(1..20)]
@@ -144,11 +160,17 @@ class Cave
     @pits.any? { |e| e.number == room.number }
   end
 
+  def bat?(room)
+    @bats.any? { |e| e.number == room.number }
+  end
+
   attr_reader :rooms, :starting_room, :wumpus_room
 end
 
 
-narrator = Narrator.new(Cave.new)
+cave = Marshal.load(File.binread("cave.dump"))
+
+narrator = Narrator.new(cave)
 
 until narrator.finished?
   narrator.describe_room
