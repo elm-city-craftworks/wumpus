@@ -41,6 +41,10 @@ class Narrator
       puts "You smell something terrible."
     end
 
+    if @current_room.neighbors.any? { |e| @cave.pit?(e) }
+      puts "You feel a cold wind flowing through the cavern"
+    end
+
     puts "Exits go to: #{exits.join(', ')}"
   end
 
@@ -50,8 +54,11 @@ class Narrator
       when "m"
         @current_room = @current_room.find_neighbor(dest)
 
-        if @cave.wumpus_room?(@current_room)
+        case
+        when @cave.wumpus_room?(@current_room)
           game_over("The wumpus gobbled you up. GAME OVER!")
+        when @cave.pit?(@current_room)
+          game_over("You stumbled into a bottomless pit. Have a nice fall!")
         end
       when "s"
         if @cave.wumpus_room?(@current_room.find_neighbor(dest))
@@ -119,12 +126,22 @@ class Cave
 
     connections.each { |a,b| @rooms[a].connect(@rooms[b]) }
 
-    @starting_room = @rooms[rand(1..20)]
-    @wumpus_room   = @rooms[rand(1..20)]
+    @starting_room = random_room
+    @wumpus_room   = random_room
+
+    @pits = 3.times.map { random_room }
+  end
+
+  def random_room
+    @rooms[rand(1..20)]
   end
 
   def wumpus_room?(room)
     room.number == @wumpus_room.number
+  end
+
+  def pit?(room)
+    @pits.any? { |e| e.number == room.number }
   end
 
   attr_reader :rooms, :starting_room, :wumpus_room
