@@ -40,7 +40,7 @@ module Wumpus
             finish_story("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!")
           else
             finish_story("YOU SHOT INTO AN EMPTY ROOM. THIS WOKE THE WUMPUS "+
-                      "FROM HIS SLUMBER, AND HE GOBBLED YOU UP!")
+                         "FROM HIS SLUMBER, AND HE GOBBLED YOU UP!")
           end
         end
       end
