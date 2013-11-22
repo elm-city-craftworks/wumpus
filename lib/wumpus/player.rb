@@ -1,9 +1,12 @@
 module Wumpus
   class Player
-    def initialize
+    def initialize(room)
       @senses     = {}
       @encounters = {}
+      @room       = room
     end
+
+    attr_reader :room
 
     def sense(thing, &callback)
       @senses[thing] = callback
@@ -14,16 +17,16 @@ module Wumpus
     end
 
     def enter(room)
+      @room = room
+
       @encounters.each do |thing, action|
         return(action.call) if room.has?(thing)
       end
     end
 
-    def investigate(room)
+    def explore_room
       @senses.each do |thing, action|
-        if room.neighbors.any? { |room| room.has?(thing) }
-          action.call
-        end
+        action.call if @room.neighbors.any? { |e| e.has?(thing) }
       end
     end
   end

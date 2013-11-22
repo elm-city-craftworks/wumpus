@@ -15,14 +15,14 @@ module Wumpus
     end
 
     def current_room
-      @cave.current_room
+      @player.room
     end
 
     def describe_room
       say "-----------------------------------------"
       say "You are in room #{current_room.number}."
 
-      @player.investigate(current_room) 
+      @player.explore_room
 
       say "Exits go to: #{current_room.exits.join(', ')}"
     end
@@ -33,7 +33,6 @@ module Wumpus
         when "m"
           new_room = current_room.neighbor(dest)
 
-          @cave.move_to(new_room) # FIXME: awkward double call here
           @player.enter(new_room) # .........
         when "s"
           if current_room.neighbor(dest).has?(:wumpus)

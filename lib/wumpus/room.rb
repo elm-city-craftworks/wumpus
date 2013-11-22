@@ -22,6 +22,14 @@ module Wumpus
       @contents.include?(thing)
     end
 
+    def empty?
+      @contents.empty?
+    end
+
+    def safe?
+      empty? && neighbors.all? { |e| e.empty? }
+    end
+
     def connect(other_room)
       neighbors << other_room
 

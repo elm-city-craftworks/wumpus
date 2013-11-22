@@ -1,13 +1,9 @@
 module Wumpus
   class Cave
     def initialize
-      @rooms        = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
-      @current_room = random_room
-
+      @rooms = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
       build_dodechadron_layout
     end
-
-    attr_reader :current_room
 
     def add_hazard(thing, count)
       count.times { random_room.add(thing) }
@@ -17,16 +13,15 @@ module Wumpus
       @rooms.values.sample
     end
 
-    def move_to(room)
-      @current_room = room
-    end
-
     def move(thing, from: raise, to: raise)
       from.remove(thing)
       to.add(thing)
     end
 
-    private
+    def entrance
+      @entrance ||= @rooms.values.find(&:safe?)
+    end
+
 
     def build_dodechadron_layout
       connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
