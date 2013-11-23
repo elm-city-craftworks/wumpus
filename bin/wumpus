@@ -61,11 +61,6 @@ end
 
 # Actions
 
-player.action(:inspect) do |destination|
-  p destination.exits
-  p destination.instance_variable_get(:@contents)
-end
-
 player.action(:move) do |destination|
   player.enter(destination)
 end

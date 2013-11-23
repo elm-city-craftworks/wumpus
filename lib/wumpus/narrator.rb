@@ -54,14 +54,14 @@ module Wumpus
       say "-----------------------------------------"
       command = ask("What do you want to do? (m)ove or (s)hoot?")
 
-      unless ["m","s", "i"].include?(command)
+      unless ["m","s"].include?(command)
         say "INVALID ACTION! TRY AGAIN!"
         return
       end
 
       dest = ask("Where?").to_i
 
-      unless command == "i" || current_room.exits.include?(dest)
+      unless current_room.exits.include?(dest)
         say "THERE IS NO PATH TO THAT ROOM! TRY AGAIN!"
         return
       end
