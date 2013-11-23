@@ -3,6 +3,7 @@ module Wumpus
     def initialize(room)
       @senses     = {}
       @encounters = {}
+      @actions    = {}
       @room       = room
     end
 
@@ -14,6 +15,10 @@ module Wumpus
 
     def encounter(thing, &callback)
       @encounters[thing] = callback
+    end
+
+    def action(thing, &callback)
+      @actions[thing] = callback
     end
 
     def enter(room)
@@ -28,6 +33,10 @@ module Wumpus
       @senses.each do |thing, action|
         action.call if @room.neighbors.any? { |e| e.has?(thing) }
       end
+    end
+
+    def act(action, destination)
+      @actions[action].call(destination)
     end
   end
 end

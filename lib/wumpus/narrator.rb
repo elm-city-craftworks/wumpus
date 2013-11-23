@@ -11,7 +11,7 @@ module Wumpus
 
     def ask(question)
       print "#{question} "
-      gets.chomp
+      STDIN.gets.chomp
     end
 
     def current_room
@@ -28,20 +28,10 @@ module Wumpus
     end
 
     def ask_player_to_act
-      accepting_player_input do |action, dest|
-        case action
-        when "m"
-          new_room = current_room.neighbor(dest)
-
-          @player.enter(new_room) # .........
-        when "s"
-          if current_room.neighbor(dest).has?(:wumpus)
-            finish_story("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!")
-          else
-            finish_story("YOU SHOT INTO AN EMPTY ROOM. THIS WOKE THE WUMPUS "+
-                         "FROM HIS SLUMBER, AND HE GOBBLED YOU UP!")
-          end
-        end
+      actions = {"m" => :move, "s" => :shoot, "i" => :inspect }
+      
+      accepting_player_input do |command, room_number| 
+        @player.act(actions[command], @cave.room(room_number))
       end
     end
 
@@ -62,21 +52,21 @@ module Wumpus
 
     def accepting_player_input
       say "-----------------------------------------"
-      action = ask("What do you want to do? (m)ove or (s)hoot?")
+      command = ask("What do you want to do? (m)ove or (s)hoot?")
 
-      unless ["m","s"].include?(action)
+      unless ["m","s", "i"].include?(command)
         say "INVALID ACTION! TRY AGAIN!"
         return
       end
 
       dest = ask("Where?").to_i
 
-      unless current_room.exits.include?(dest)
+      unless command == "i" || current_room.exits.include?(dest)
         say "THERE IS NO PATH TO THAT ROOM! TRY AGAIN!"
         return
       end
 
-      yield(action, dest)
+      yield(command, dest)
     end
   end
 end

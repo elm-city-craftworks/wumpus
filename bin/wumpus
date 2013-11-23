@@ -1,5 +1,7 @@
-#!/usr/bin/env/ruby
+#!/usr/bin/env ruby
 require_relative "../lib/wumpus"
+
+srand(ARGV[0].to_i) if ARGV[0]
 
 cave     = Wumpus::Cave.new
 
@@ -28,6 +30,20 @@ end
 
 # Encounters
 
+player.encounter(:wumpus) do
+  case [:move, :stay].sample
+  when :move
+    new_wumpus_room = player.room.neighbors.to_a.sample
+
+    cave.move(:wumpus, from: player.room, to: new_wumpus_room)
+
+    narrator.say("You heard a rumbling in a nearby cavern.")
+    player.enter(player.room)
+  when :stay
+    narrator.finish_story("The wumpus ate you up!")
+  end
+end
+
 player.encounter(:bats) do
   narrator.say "Giant bats whisk you away to a new cavern!"
 
@@ -39,15 +55,41 @@ player.encounter(:bats) do
   cave.move(:bats, from: old_room, to: new_room)
 end
 
-player.encounter(:wumpus) do
-  narrator.finish_story("The wumpus ate you up!")
-end
-
 player.encounter(:pit) do
   narrator.finish_story("You fell into a bottomless pit. Enjoy the ride!")
 end
 
-# Actions 
+# Actions
+
+player.action(:inspect) do |destination|
+  p destination.exits
+  p destination.instance_variable_get(:@contents)
+end
+
+player.action(:move) do |destination|
+  player.enter(destination)
+end
+
+player.action(:shoot) do |destination|
+  case
+  when destination.has?(:wumpus)
+    narrator.finish_story("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!")
+  when (wumpus_room = destination.neighbors.find { |e| e.has?(:wumpus) })
+    if [:move, :stay].sample == :move
+      new_wumpus_room = wumpus_room.neighbors.to_a.sample
+
+      cave.move(:wumpus, from: wumpus_room, to: new_wumpus_room)
+
+      if new_wumpus_room == player.room
+        narrator.finish_story("You woke up the wumpus and he ate you!")
+      else
+        narrator.say("You heard a rumbling in a nearby cavern.")
+      end
+    end
+  else
+    narrator.say("Your arrow missed!")
+  end
+end
 
 until narrator.finished?
   narrator.describe_room

@@ -6,7 +6,14 @@ module Wumpus
     end
 
     def add_hazard(thing, count)
-      count.times { random_room.add(thing) }
+      count.times do
+        room = random_room
+
+        redo if room.has?(thing)
+
+        room.add(thing) 
+        puts "#{thing}: #{room.number}"
+      end
     end
 
     def random_room
@@ -22,6 +29,9 @@ module Wumpus
       @entrance ||= @rooms.values.find(&:safe?)
     end
 
+    def room(number)
+      @rooms[number]
+    end
 
     def build_dodechadron_layout
       connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
