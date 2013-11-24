@@ -23,6 +23,21 @@ module Wumpus
       describe_ending
     end
 
+    def finish_story(message)
+      @ending_message = message
+    end
+
+    private
+    
+    def finished?
+      !!@ending_message
+    end
+
+    def describe_ending
+      say "-----------------------------------------"
+      say @ending_message
+    end
+
     def describe_room
       say "-----------------------------------------"
       say "You are in room #{@player.room.number}."
@@ -39,21 +54,6 @@ module Wumpus
         @player.act(actions[command], @cave.room(room_number))
       end
     end
-
-    def finished?
-      !!@ending_message
-    end
-
-    def describe_ending
-      say "-----------------------------------------"
-      say @ending_message
-    end
-
-    def finish_story(message)
-      @ending_message = message
-    end
-
-    private
 
     def accepting_player_input
       say "-----------------------------------------"
