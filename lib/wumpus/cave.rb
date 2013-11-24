@@ -24,6 +24,10 @@ module Wumpus
       to.add(thing)
     end
 
+    def room_with(thing)
+      @rooms.values.find { |e| e.has?(thing) }
+    end
+
     def entrance
       @entrance ||= @rooms.values.find(&:safe?)
     end

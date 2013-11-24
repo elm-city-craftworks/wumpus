@@ -90,9 +90,61 @@ def misfire_test
   puts "MISFIRE OK"
 end
 
+def wumpus_started_by_move_test
+  commands = [ move(1), 
+               move(8) #bats carry us to the wumpus room and he moves
+             ]
+
+  output = game(333, commands)
+
+  fail "Wumpus startle on move broken!" unless output.scan_until(/rumbling/)
+
+  puts "WUMPUS STARTLE ON MOVE OK"
+end
+
+def wumpus_started_by_shoot_test
+  commands = [ move(3),
+               move(12),
+               shoot(9), # wumpus doesn't move
+               shoot(9)  # wumpus moves away and can't be sensed
+             ]
+
+  output = game(333, commands)
+
+  fail "Wumpus startle on shoot broken!" unless output.scan_until(/smell/) &&
+                                                output.scan_until(/smell/) &&
+                                                 output.scan_until(/rumbling/) &&
+                                                 !output.exist?(/smell/)
+
+  puts "WUMPUS STARTLE BY SHOOT OK"
+end
+
+def wumpus_kill_on_startle_test
+  commands = [ move(1),
+               move(8),
+               shoot(12), # wumpus doesn't move
+               shoot(12), # wumpus doesn't move
+               shoot(12), # wumpus doesn't move
+               shoot(12)  # wumpus kills you!
+             ]
+
+  output = game(333, commands)
+
+  fail "Wumpus kill on startle test" unless output.scan_until(/smell/) &&
+                                            output.scan_until(/smell/) &&
+                                            output.scan_until(/smell/) &&
+                                            output.scan_until(/smell/) &&
+                                            output.scan_until(/ate/)
+
+
+end
+
 
 bats_test
 pits_test
 wumpus_killer_test
 death_by_wumpus_test
 misfire_test
+wumpus_started_by_move_test
+wumpus_started_by_shoot_test
+wumpus_kill_on_startle_test

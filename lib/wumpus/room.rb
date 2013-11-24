@@ -44,10 +44,6 @@ module Wumpus
       neighbors.find { |e| e.number == number }
     end
 
-    def with_neighbors
-      [self] + neighbors.to_a
-    end
-
     def random_neighbor
       neighbors.to_a.sample
     end
