@@ -13,7 +13,7 @@ cave.add_hazard(:pit, 3)
 cave.add_hazard(:bats, 3)
 
 player   = Wumpus::Player.new(cave.entrance)
-narrator = Wumpus::Narrator.new(cave, player)
+narrator = Wumpus::Narrator.new(player)
 
 # Senses
 

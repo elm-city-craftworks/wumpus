@@ -1,7 +1,6 @@
 module Wumpus
   class Narrator
-    def initialize(cave, player)
-      @cave   = cave
+    def initialize(player)
       @player = player
     end
 
@@ -51,7 +50,7 @@ module Wumpus
       actions = {"m" => :move, "s" => :shoot, "i" => :inspect }
       
       accepting_player_input do |command, room_number| 
-        @player.act(actions[command], @cave.room(room_number))
+        @player.act(actions[command], @player.room.neighbor(room_number))
       end
     end
 
