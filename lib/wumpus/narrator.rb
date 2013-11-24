@@ -14,10 +14,6 @@ module Wumpus
       STDIN.gets.chomp
     end
 
-    def current_room
-      @player.room
-    end
-
     def tell_story
       until finished?
         describe_room
@@ -29,11 +25,11 @@ module Wumpus
 
     def describe_room
       say "-----------------------------------------"
-      say "You are in room #{current_room.number}."
+      say "You are in room #{@player.room.number}."
 
       @player.explore_room
 
-      say "Exits go to: #{current_room.exits.join(', ')}"
+      say "Exits go to: #{@player.room.exits.join(', ')}"
     end
 
     def ask_player_to_act
@@ -70,7 +66,7 @@ module Wumpus
 
       dest = ask("Where?").to_i
 
-      unless current_room.exits.include?(dest)
+      unless @player.room.exits.include?(dest)
         say "THERE IS NO PATH TO THAT ROOM! TRY AGAIN!"
         return
       end
