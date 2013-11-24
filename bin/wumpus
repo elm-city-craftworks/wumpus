@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require_relative "../lib/wumpus"
 
-# For testing, but also for restoring a world with the same rules
+# For testing, but also for restoring a world with the same conditions
 srand(ARGV[0].to_i) if ARGV[0]
 
 # World setup
