@@ -12,6 +12,8 @@ cave.add_hazard(:wumpus, 1)
 cave.add_hazard(:pit, 3)
 cave.add_hazard(:bats, 3)
 
+# Player and narrator setup
+
 player   = Wumpus::Player.new(cave.entrance)
 narrator = Wumpus::Narrator.new(player)
 
