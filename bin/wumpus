@@ -59,8 +59,7 @@ player.action(:move) do |destination|
 end
 
 player.action(:shoot) do |destination|
-  rooms       = ([destination] + destination.neighbors.to_a)
-  wumpus_room = rooms.find { |r| r.has?(:wumpus) }
+  wumpus_room = destination.with_neighbors.find { |r| r.has?(:wumpus) }
 
   case wumpus_room
   when destination
