@@ -6,7 +6,7 @@ module Wumpus
     end
 
     def say(message)
-      puts message
+      STDOUT.puts message
     end
 
     def ask(question)
