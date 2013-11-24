@@ -18,6 +18,15 @@ module Wumpus
       @player.room
     end
 
+    def tell_story
+      until finished?
+        describe_room
+        ask_player_to_act
+      end
+
+      describe_ending
+    end
+
     def describe_room
       say "-----------------------------------------"
       say "You are in room #{current_room.number}."

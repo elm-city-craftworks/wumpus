@@ -43,5 +43,9 @@ module Wumpus
     def neighbor(number)
       neighbors.find { |e| e.number == number }
     end
+
+    def random_neighbor
+      neighbors.to_a.sample
+    end
   end
 end

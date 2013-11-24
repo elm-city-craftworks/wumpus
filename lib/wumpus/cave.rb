@@ -12,7 +12,6 @@ module Wumpus
         redo if room.has?(thing)
 
         room.add(thing) 
-        puts "#{thing}: #{room.number}"
       end
     end
 
