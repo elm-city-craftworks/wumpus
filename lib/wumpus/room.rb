@@ -5,25 +5,25 @@ module Wumpus
     def initialize(number)
       @number    = number
       @neighbors = Set.new
-      @contents  = []
+      @hazards  = Set.new
     end
 
     attr_reader :number, :neighbors
 
     def add(thing)
-      @contents.push(thing)
+      @hazards << thing
     end
 
     def remove(thing)
-      @contents.delete(thing)
+      @hazards.delete(thing)
     end
 
     def has?(thing)
-      @contents.include?(thing)
+      @hazards.include?(thing)
     end
 
     def empty?
-      @contents.empty?
+      @hazards.empty?
     end
 
     def safe?
