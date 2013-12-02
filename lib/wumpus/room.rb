@@ -1,11 +1,9 @@
-require "set"
-
 module Wumpus
   class Room
     def initialize(number)
       @number    = number
-      @neighbors = Set.new
-      @hazards  = Set.new
+      @neighbors = []
+      @hazards   = []
     end
 
     attr_reader :number, :neighbors
@@ -45,7 +43,7 @@ module Wumpus
     end
 
     def random_neighbor
-      neighbors.to_a.sample
+      neighbors.sample
     end
   end
 end
