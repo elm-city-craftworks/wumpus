@@ -36,6 +36,8 @@ module Wumpus
       @rooms[number]
     end
 
+    private
+
     def build_dodechadron_layout
       connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
                      [1,5],[2,3],[9,10],[20,11],[7,8],
