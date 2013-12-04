@@ -63,9 +63,4 @@ describe "A cave" do
 
     assert entrance.safe?
   end
-
-  def must_eventually(message, n=1000)
-    n.times { yield and return pass }
-    flunk("Expected to #{message}, but didn't")
-  end
 end
