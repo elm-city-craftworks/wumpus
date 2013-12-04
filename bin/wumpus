@@ -14,7 +14,7 @@ cave.add_hazard(:bats, 3)
 
 # Player and narrator setup
 
-player   = Wumpus::Player.new(cave.entrance)
+player   = Wumpus::Player.new
 narrator = Wumpus::Narrator.new(player)
 
 # Senses
@@ -84,4 +84,6 @@ player.action(:startle_wumpus) do |old_wumpus_room|
 end
 
 # Kick off the event loop
+
+player.enter(cave.entrance)
 narrator.tell_story

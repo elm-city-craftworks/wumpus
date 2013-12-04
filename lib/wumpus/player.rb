@@ -1,10 +1,9 @@
 module Wumpus
   class Player
-    def initialize(room)
+    def initialize
       @senses     = {}
       @encounters = {}
       @actions    = {}
-      @room       = room
     end
 
     attr_reader :room

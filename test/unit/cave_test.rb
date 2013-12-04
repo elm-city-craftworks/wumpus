@@ -1,5 +1,6 @@
-require_relative "../helper"
 require "set"
+
+require_relative "../helper"
 
 describe "A cave" do
   let(:cave) { Wumpus::Cave.new }
