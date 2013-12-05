@@ -61,14 +61,12 @@ player.action(:move) do |destination|
 end
 
 player.action(:shoot) do |destination|
-  wumpus_room = cave.room_with(:wumpus)
-
-  if wumpus_room == destination
+  if destination.has?(:wumpus)
     narrator.finish_story("YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!") 
   else
     narrator.say("Your arrow missed!")
 
-    player.act(:startle_wumpus, wumpus_room)
+    player.act(:startle_wumpus, cave.room_with(:wumpus))
   end
 end
 
