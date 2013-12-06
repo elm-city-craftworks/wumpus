@@ -6,7 +6,7 @@ srand(ARGV[0].to_i) if ARGV[0]
 
 # World setup
 
-cave = Wumpus::Cave.new
+cave = Wumpus::Cave.dodecahedron
 
 cave.add_hazard(:wumpus, 1)
 cave.add_hazard(:pit, 3)

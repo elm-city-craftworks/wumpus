@@ -11,7 +11,11 @@ module Wumpus
     end
 
     def initialize(edges)
-      @rooms = Hash.new { |h,k| h[k] = Room.new(k) }
+      # FIXME: Can probably be changed to use an arbitrary number of rooms.
+      # The only reason it's not set up that way now is because of the
+      # brittleness of test/acceptance.rb
+      @rooms = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
+
       edges.each { |a,b| @rooms[a].connect(@rooms[b]) }
     end
 
