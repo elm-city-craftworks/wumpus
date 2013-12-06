@@ -1,75 +1,80 @@
+require "set"
 require_relative "../helper"
 
 describe "the player" do
-  it "can sense nearby hazards when exploring rooms" do
-    cave = Wumpus::Cave.dodecahedron
-    room = cave.entrance
+  let(:player) { Wumpus::Player.new }
 
-    room.random_neighbor.add(:bats)
-    room.random_neighbor.add(:wumpus)
+  let(:empty_room) { Wumpus::Room.new(1) }
 
-    output = []
+  let(:wumpus_room) do
+    Wumpus::Room.new(2).tap { |e| e.add(:wumpus) }
+  end
 
-    player = Wumpus::Player.new
-    player.enter(room)
+  let(:bat_room) do
+    Wumpus::Room.new(3).tap { |e| e.add(:bats) }
+  end
+
+  let(:sensed)      { Set.new }
+  let(:encountered) { Set.new }
+
+  before do
+    empty_room.connect(bat_room)
+    empty_room.connect(wumpus_room)
 
     player.sense(:bats) do
-      output << "You hear a rustling sound"
+      sensed << "You hear a rustling"
     end
 
     player.sense(:wumpus) do
-      output << "You smell something terrible"
+      sensed << "You smell something terrible"
     end
 
-    player.explore_room
-
-    output.must_equal(["You hear a rustling sound", "You smell something terrible"])
-
-    cave.room_with(:bats).remove(:bats)
-    output.clear
-
-    player.explore_room
-    output.must_equal(["You smell something terrible"])
-  end
-
-  it "can encounter hazards when entering a room" do
-    safe_room   = Wumpus::Room.new(42)
-
-    unsafe_room = Wumpus::Room.new(99)
-    unsafe_room.add(:wumpus)
-
-    effects = []
-    
-    player = Wumpus::Player.new
-    
     player.encounter(:wumpus) do
-      effects << "The wumpus ate you up!"
+      encountered << "The wumpus ate you up!"
     end
 
-    player.enter(safe_room)
-
-    assert effects.empty?
-
-    player.enter(unsafe_room)
-
-    effects.must_equal(["The wumpus ate you up!"])
-  end
-
-  it "can perform actions" do
-    player = Wumpus::Player.new
-
-    room_a = Wumpus::Room.new(42)
-    room_b = Wumpus::Room.new(99)
-
-    player.enter(room_a)
-
-    player.room.must_equal(room_a)
+    player.encounter(:bats) do
+      encountered << "The bats whisk you away!"
+    end
 
     player.action(:move) do |destination|
       player.enter(destination)
     end
+  end
 
-    player.act(:move, room_b)
-    player.room.must_equal(room_b)
+  it "can sense nearby hazards" do
+    player.enter(empty_room)
+    player.explore_room
+
+    sensed.must_equal(Set["You hear a rustling", "You smell something terrible"])
+    
+    assert encountered.empty?
+  end
+
+  it "can encounter hazards when entering a room" do
+    player.enter(wumpus_room)
+
+    encountered.must_equal(Set["The wumpus ate you up!"])
+
+    encountered.clear
+
+    player.enter(bat_room)
+
+    encountered.must_equal(Set["The bats whisk you away!"])
+    
+    assert sensed.empty?
+  end
+
+  it "can perform actions" do
+    player.enter(empty_room)
+
+    player.room.must_equal(empty_room)
+
+    player.act(:move, wumpus_room)
+    player.room.must_equal(wumpus_room)
+
+    encountered.must_equal(Set["The wumpus ate you up!"])
+
+    assert sensed.empty?
   end
 end
