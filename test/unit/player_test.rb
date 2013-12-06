@@ -2,7 +2,7 @@ require_relative "../helper"
 
 describe "the player" do
   it "can sense nearby hazards when exploring rooms" do
-    cave = Wumpus::Cave.new
+    cave = Wumpus::Cave.dodecahedron
     room = cave.entrance
 
     room.random_neighbor.add(:bats)

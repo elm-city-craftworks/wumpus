@@ -1,8 +1,18 @@
+require "json"
+
 module Wumpus
   class Cave
-    def initialize
-      @rooms = (1..20).map.with_object({}) { |i, h| h[i] = Room.new(i) }
-      build_dodechadron_layout
+    def self.dodecahedron
+      from_json("#{Wumpus::DATA_DIR}/dodecahedron.json")
+    end
+
+    def self.from_json(filename)
+      new(JSON.parse(File.read(filename)))
+    end
+
+    def initialize(edges)
+      @rooms = Hash.new { |h,k| h[k] = Room.new(k) }
+      edges.each { |a,b| @rooms[a].connect(@rooms[b]) }
     end
 
     def add_hazard(thing, count)
@@ -36,7 +46,6 @@ module Wumpus
       @rooms[number]
     end
 
-    private
 
     def build_dodechadron_layout
       connections = [[1,2],[2,10],[10,11],[11,8],[8,1],
