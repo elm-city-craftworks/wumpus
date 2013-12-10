@@ -2,7 +2,7 @@ Instructions for DIY Hunt the Wumpus
 
 1) Download the tests for the `Wumpus::Room` class:
 
-    $ git pull room_tests
+    $ git pull origin room_tests
 
 2) Run the tests and verify that there are new failures:
 
@@ -12,7 +12,7 @@ Instructions for DIY Hunt the Wumpus
 
 4) Download the tests for the `Wumpus::Cave` class:
  
-    $ git pull cave_tests
+    $ git pull origin cave_tests
 
 5) Run the tests and verify that there are new failures:
 
@@ -22,7 +22,7 @@ Instructions for DIY Hunt the Wumpus
 
 7) Download the tests for the `Wumpus::Player` class:
 
-    $ git pull player_tests
+    $ git pull origin player_tests
 
 8) Run the tests and verify that there are new failures:
 
@@ -32,7 +32,7 @@ Instructions for DIY Hunt the Wumpus
 
 9) Download the game executable and supporting UI code:
 
-    $ git pull game_executable
+    $ git pull origin game_executable
 
 10) Enjoy a game of Hunt The Wumpus (hopefully):
 
@@ -41,4 +41,4 @@ Instructions for DIY Hunt the Wumpus
 If you get stuck, or you just want to see how Practicing Ruby implemented 
 this game, you can always check out the reference implementation:
 
-    $ git checkout reference_implementation
+    $ git checkout origin/reference_implementation
