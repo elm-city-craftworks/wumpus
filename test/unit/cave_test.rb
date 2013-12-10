@@ -59,8 +59,6 @@ describe "A cave" do
 
     entrance = cave.entrance
 
-    entrance.must_be_instance_of(Wumpus::Room)
-
     assert entrance.safe?
   end
 end
