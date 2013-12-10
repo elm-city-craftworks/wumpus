@@ -6,7 +6,7 @@ describe "A cave" do
   let(:cave)  { Wumpus::Cave.dodecahedron }
   let(:rooms) { (1..20).map { |i| cave.room(i) } }
   
-  it "has rooms that connect to exactly three other rooms" do
+  it "has 20 rooms that each connect to exactly three other rooms" do
     rooms.each do |room|
       room.neighbors.count.must_equal(3)
       
