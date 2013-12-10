@@ -1,19 +1,15 @@
 require_relative "../helper"
 
 describe "A room" do
-  let(:room) { Wumpus::Room.new(42) }
-
-  ### IDENTITY ###
+  let(:room) { Wumpus::Room.new(12) }
 
   it "has a number" do
-    room.number.must_equal(42)
+    room.number.must_equal(12)
   end
-
-  ### HAZARDS ###
 
   it "may contain hazards" do 
     # rooms start out empty
-    assert room.empty? 
+    assert room.empty?
 
     # hazards can be added
     room.add(:wumpus)
@@ -33,46 +29,45 @@ describe "A room" do
     refute room.has?(:bats)
   end
 
-  ### NEIGHBORS ###
+  describe "with neighbors" do
+    let(:exit_numbers) { [11, 3, 7] }
 
-  it "has connections to neighbors" do
-    neighbors = [2,4,8].each do |i| 
-      # create a connection to a neighboring room
-      room.connect(Wumpus::Room.new(i)) 
-
-      # a neighbor can be looked up by room number
-      room.neighbor(i).number.must_equal(i)
-
-      # Room connections are bidirectional
-      room.neighbor(i).neighbor(room.number).must_equal(room)
+    before do
+      exit_numbers.each { |i| room.connect(Wumpus::Room.new(i)) }
     end
 
-    # Can get numbers of all neighboring rooms
-    room.exits.must_equal([2,4,8])
+    it "has two-way connections to neighbors" do
+      exit_numbers.each do |i| 
+        # a neighbor can be looked up by room number
+        room.neighbor(i).number.must_equal(i)
 
-    # Can grab a random room
-    [2,4,8].must_include(room.random_neighbor.number)
-  end
+        # Room connections are bidirectional
+        room.neighbor(i).neighbor(room.number).must_equal(room)
+      end
+    end
 
-  ### SAFETY ###
+    it "knows the numbers of all neighboring rooms" do
+      room.exits.must_equal(exit_numbers)
+    end
 
-  it "is not safe if it has hazards" do
-    room.add(:wumpus)
+    it "can choose a neighbor randomly" do
+      exit_numbers.must_include(room.random_neighbor.number)
+    end
+    
+    it "is not safe if it has hazards" do
+      room.add(:wumpus)
 
-    refute room.safe?
-  end
+      refute room.safe?
+    end
 
-  it "is not safe if its neighbors have hazards" do
-    [2,4,8].each { |i| room.connect(Wumpus::Room.new(i)) }
+    it "is not safe if its neighbors have hazards" do
+      room.random_neighbor.add(:wumpus)
 
-    room.random_neighbor.add(:wumpus)
+      refute room.safe?
+    end
 
-    refute room.safe?
-  end
-
-  it "is safe when it and its neighbors have no hazards" do
-    [2,4,8].each { |i| room.connect(Wumpus::Room.new(i)) }
-
-    assert room.safe?
+    it "is safe when it and its neighbors have no hazards" do
+      assert room.safe?
+    end
   end
 end
