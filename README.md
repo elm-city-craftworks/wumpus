@@ -55,3 +55,5 @@ See the game transcript below for an example of how to play:
     YOU KILLED THE WUMPUS! GOOD JOB, BUDDY!!!
 
  If you have any questions, please email gregory@practicingruby.com
+
+[wumpus]: http://en.wikipedia.org/wiki/Hunt_the_Wumpus
