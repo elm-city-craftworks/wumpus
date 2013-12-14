@@ -1,7 +1,6 @@
 require "set"
 require_relative "../helper"
 
-
 describe "the player" do
   let(:player) { Wumpus::Player.new }
 
@@ -43,7 +42,7 @@ describe "the player" do
     end
   end
 
-  it "can sense hazards in neighboring rooms" do
+  it "can sense nearby hazards" do
     player.enter(empty_room)
     player.explore_room
 
@@ -53,17 +52,29 @@ describe "the player" do
   end
 
   it "can encounter hazards when entering a room" do
+    player.enter(wumpus_room)
+
+    encountered.must_equal(Set["The wumpus ate you up!"])
+
+    encountered.clear
+
     player.enter(bat_room)
+
     encountered.must_equal(Set["The bats whisk you away!"])
     
-    assert sensed.empty? 
+    assert sensed.empty?
   end
 
   it "can perform actions" do
+    player.enter(empty_room)
+
+    player.room.must_equal(empty_room)
+
     player.act(:move, wumpus_room)
     player.room.must_equal(wumpus_room)
 
     encountered.must_equal(Set["The wumpus ate you up!"])
+
     assert sensed.empty?
   end
 end

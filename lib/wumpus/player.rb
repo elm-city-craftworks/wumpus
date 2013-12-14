@@ -1,41 +1,33 @@
 module Wumpus
   class Player
     def initialize
-      @senses     = {}
-      @encounters = {}
-      @actions    = {}
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     attr_reader :room
 
     def sense(thing, &callback)
-      @senses[thing] = callback
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     def encounter(thing, &callback)
-      @encounters[thing] = callback
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     def action(thing, &callback)
-      @actions[thing] = callback
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     def enter(room)
-      @room = room
-
-      @encounters.each do |thing, action|
-        return(action.call) if room.has?(thing)
-      end
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     def explore_room
-      @senses.each do |thing, action|
-        action.call if @room.neighbors.any? { |e| e.has?(thing) }
-      end
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
 
     def act(action, destination)
-      @actions[action].call(destination)
+      raise NotImplementedError, "See lib/wumpus/player.rb"
     end
   end
 end
