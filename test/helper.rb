@@ -3,7 +3,7 @@ require "minitest/autorun"
 require "strscan"
 require_relative "../lib/wumpus"
 
-class MiniTest::Unit::TestCase
+module MiniTest::Expectations
   def must_eventually(message, n=1000)
     n.times { yield and return pass }
     flunk("Expected to #{message}, but didn't")
